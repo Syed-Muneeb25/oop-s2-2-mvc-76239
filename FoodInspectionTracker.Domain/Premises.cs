@@ -14,7 +14,6 @@ namespace FoodInspectionTracker.Domain
         public string Name { get; set; }
         public string Address { get; set; }
         public string Town { get; set; }
-        [RegularExpression("Low|Medium|High", ErrorMessage = "RiskRating must be Low, Medium, or High.")]
         public RiskRating RiskRating { get; set; }
         public ICollection<Inspection> Inspections { get; set; } = new List<Inspection>();
     }
