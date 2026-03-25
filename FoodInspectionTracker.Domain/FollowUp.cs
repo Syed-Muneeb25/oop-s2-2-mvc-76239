@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System;
 
 namespace FoodInspectionTracker.Domain
 {
@@ -9,9 +10,7 @@ namespace FoodInspectionTracker.Domain
         public int Id { get; set; }
         public int InspectionId { get; set; }
         public Inspection? Inspection { get; set; }
-
         public DateTime DueDate { get; set; }
-        [NotMapped]
         public FollowUpStatus Status { get; set; }
         public DateTime? ClosedDate { get; set; }
 
