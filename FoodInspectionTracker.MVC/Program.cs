@@ -59,11 +59,11 @@ try
     var app = builder.Build();
 
     // ── Migrate + Seed ──────────────────────────────────────────────────────
-    //using (var scope = app.Services.CreateScope())
+    using (var scope = app.Services.CreateScope())
     {
-      //  var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        // db.Database.Migrate();
-       //  await DbSeeder.SeedRolesAndUsersAsync(scope.ServiceProvider);
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+        await DbSeeder.SeedRolesAndUsersAsync(scope.ServiceProvider);
     }
 
     // ── Global exception handler ────────────────────────────────────────────

@@ -2,6 +2,8 @@
 using FoodInspectionTracker.MVC.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
 
 namespace FoodInspectionTracker.MVC.Controllers
 {
@@ -82,3 +84,4 @@ namespace FoodInspectionTracker.MVC.Controllers
             return View(vm);
         }
     }
+}

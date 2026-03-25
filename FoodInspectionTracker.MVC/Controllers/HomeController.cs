@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using FoodInspectionTracker.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FoodInspectionTracker.MVC.Controllers
 {

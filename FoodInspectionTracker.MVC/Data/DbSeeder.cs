@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace FoodSafetyTracker.Data;
+namespace FoodInspectionTracker.MVC.Data
+{
 
-public static class DbSeeder
+    public static class DbSeeder
 {
     public static async Task SeedRolesAndUsersAsync(IServiceProvider services)
     {
@@ -32,4 +33,6 @@ public static class DbSeeder
         if (!await um.IsInRoleAsync(user, role))
             await um.AddToRoleAsync(user, role);
     }
+}
+
 }
