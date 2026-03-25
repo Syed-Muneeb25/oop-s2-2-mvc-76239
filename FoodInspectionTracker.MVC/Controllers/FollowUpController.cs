@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FoodInspectionTracker.Domain;
+using FoodInspectionTracker.MVC.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FoodInspectionTracker.Domain;
-using FoodInspectionTracker.MVC.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FoodInspectionTracker.MVC.Controllers
 {
+    [Authorize(Roles = "Admin,Inspector")]
     public class FollowUpController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<FollowUpController> _logger;
 
-        public FollowUpController(AppDbContext context)
+        public FollowUpController(AppDbContext context, ILogger<FollowUpController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: FollowUp

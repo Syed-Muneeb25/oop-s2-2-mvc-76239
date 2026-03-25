@@ -1,5 +1,6 @@
 ﻿using FoodInspectionTracker.Domain;
 using FoodInspectionTracker.MVC.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FoodInspectionTracker.MVC.Controllers
 {
+    [Authorize(Roles = "Admin,Viewer")]
     public class DashboardController : Controller
     {
         private readonly AppDbContext _db;

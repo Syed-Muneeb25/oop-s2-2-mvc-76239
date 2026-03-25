@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FoodInspectionTracker.Domain;
+using FoodInspectionTracker.MVC.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FoodInspectionTracker.Domain;
-using FoodInspectionTracker.MVC.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FoodInspectionTracker.MVC.Controllers
 {
+    [Authorize(Roles = "Admin,Inspector")]
     public class InspectionsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<InspectionsController> _logger;
 
-        public InspectionsController(AppDbContext context)
+        public InspectionsController(AppDbContext context, ILogger<InspectionsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Inspections
