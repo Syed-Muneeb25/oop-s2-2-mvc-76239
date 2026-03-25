@@ -1,0 +1,29 @@
+name: .NET CI
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore oop-s2-2-mvc-76239.sln
+
+      - name: Build solution
+        run: dotnet build oop-s2-2-mvc-76239.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test oop-s2-2-mvc-76239.sln --configuration Release --no-build
