@@ -47,7 +47,7 @@ namespace FoodInspectionTracker.MVC.Data
             );
 
 
-            var now = DateTime.UtcNow;
+            var now = new DateTime(2026, 3, 1, 0, 0, 0, DateTimeKind.Utc);
             builder.Entity<Inspection>().HasData(
                 new Inspection { Id = 1, PremisesId = 1, InspectionDate = now.AddMonths(-6), Score = 92, Outcome = InspectionOutcome.Pass, Notes = "Excellent hygiene standards." },
                 new Inspection { Id = 2, PremisesId = 2, InspectionDate = now.AddMonths(-5), Score = 55, Outcome = InspectionOutcome.Fail, Notes = "Inadequate cold storage temperatures." },

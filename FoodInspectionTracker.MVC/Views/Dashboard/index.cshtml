@@ -1,0 +1,32 @@
+﻿@model FoodInspectionTracker.Domain.DashboardViewModel
+
+<h2>Dashboard</h2>
+
+<form method="get" class="mb-3 d-flex gap-2">
+
+    <select name="filterTown" class="form-control">
+        <option value="">All Towns</option>
+        @foreach (var t in Model.AvailableTowns ?? new List<string>())
+        {
+            <option value="@t" selected="@(t == Model.FilterTown)">
+                @t
+            </option>
+        }
+    </select>
+
+    <select name="filterRiskRating" class="form-control">
+        <option value="">All Risk Levels</option>
+        <option value="Low" selected="@(Model.FilterRiskRating?.ToString() == "Low")">Low</option>
+        <option value="Medium" selected="@(Model.FilterRiskRating?.ToString() == "Medium")">Medium</option>
+        <option value="High" selected="@(Model.FilterRiskRating?.ToString() == "High")">High</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+
+</form>
+
+<div>
+    <h4>Inspections this month: @Model.InspectionsThisMonth</h4>
+    <h4>Failed inspections this month: @Model.FailedInspectionsThisMonth</h4>
+    <h4>Overdue follow-ups: @Model.OverdueFollowUps</h4>
+</div>
