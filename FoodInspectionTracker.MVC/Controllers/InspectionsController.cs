@@ -65,10 +65,18 @@ namespace FoodInspectionTracker.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                _logger.LogInformation("Creating inspection for PremisesId={PremisesId} by {User}",
+                    inspection.PremisesId, User.Identity?.Name);
+
                 _context.Add(inspection);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Inspection created successfully. Id={Id}, Score={Score}, Outcome={Outcome}",
+                    inspection.Id, inspection.Score, inspection.Outcome);
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["PremisesId"] = new SelectList(_context.Premises, "Id", "Address", inspection.PremisesId);
             return View(inspection);
         }
@@ -106,11 +114,19 @@ namespace FoodInspectionTracker.MVC.Controllers
             {
                 try
                 {
+                    _logger.LogInformation("Updating inspection Id={Id} by {User}",
+                        inspection.Id, User.Identity?.Name);
+
                     _context.Update(inspection);
                     await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Inspection updated successfully. Id={Id}, Score={Score}, Outcome={Outcome}",
+                        inspection.Id, inspection.Score, inspection.Outcome);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
+                    _logger.LogError(ex, "Concurrency error while updating inspection Id={Id}", inspection.Id);
+
                     if (!InspectionExists(inspection.Id))
                     {
                         return NotFound();
@@ -120,8 +136,10 @@ namespace FoodInspectionTracker.MVC.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["PremisesId"] = new SelectList(_context.Premises, "Id", "Address", inspection.PremisesId);
             return View(inspection);
         }
@@ -151,12 +169,18 @@ namespace FoodInspectionTracker.MVC.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var inspection = await _context.Inspections.FindAsync(id);
+
             if (inspection != null)
             {
+                _logger.LogInformation("Deleting inspection Id={Id} by {User}",
+                    inspection.Id, User.Identity?.Name);
+
                 _context.Inspections.Remove(inspection);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Inspection deleted successfully. Id={Id}", inspection.Id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

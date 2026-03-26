@@ -62,8 +62,15 @@ namespace FoodInspectionTracker.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                _log.LogInformation("Creating premises {Name} in {Town} by {User}",
+                    premises.Name, premises.Town, User.Identity?.Name);
+
                 _context.Add(premises);
                 await _context.SaveChangesAsync();
+
+                _log.LogInformation("Premises created successfully. Id={Id}, Name={Name}",
+                    premises.Id, premises.Name);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(premises);
@@ -101,11 +108,19 @@ namespace FoodInspectionTracker.MVC.Controllers
             {
                 try
                 {
+                    _log.LogInformation("Updating premises Id={Id} by {User}",
+                        premises.Id, User.Identity?.Name);
+
                     _context.Update(premises);
                     await _context.SaveChangesAsync();
+
+                    _log.LogInformation("Premises updated successfully. Id={Id}, Name={Name}",
+                        premises.Id, premises.Name);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
+                    _log.LogError(ex, "Concurrency error while updating premises Id={Id}", premises.Id);
+
                     if (!PremisesExists(premises.Id))
                     {
                         return NotFound();
@@ -115,6 +130,7 @@ namespace FoodInspectionTracker.MVC.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(premises);
@@ -144,12 +160,18 @@ namespace FoodInspectionTracker.MVC.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var premises = await _context.Premises.FindAsync(id);
+
             if (premises != null)
             {
+                _log.LogInformation("Deleting premises Id={Id} by {User}",
+                    premises.Id, User.Identity?.Name);
+
                 _context.Premises.Remove(premises);
+                await _context.SaveChangesAsync();
+
+                _log.LogInformation("Premises deleted successfully. Id={Id}", premises.Id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

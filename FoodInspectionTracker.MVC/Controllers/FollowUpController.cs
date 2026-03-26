@@ -63,12 +63,27 @@ namespace FoodInspectionTracker.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,InspectionId,DueDate,Status,ClosedDate,Notes")] FollowUp followUp)
         {
+            if (followUp.Status == FollowUpStatus.Closed && followUp.ClosedDate == null)
+            {
+                ModelState.AddModelError("ClosedDate", "ClosedDate is required when status is Closed.");
+                _logger.LogWarning("Follow-up validation failed: Closed follow-up without ClosedDate. InspectionId={InspectionId}",
+                    followUp.InspectionId);
+            }
+
             if (ModelState.IsValid)
             {
+                _logger.LogInformation("Creating follow-up for InspectionId={InspectionId} by {User}",
+                    followUp.InspectionId, User.Identity?.Name);
+
                 _context.Add(followUp);
                 await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Follow-up created successfully. Id={Id}, DueDate={DueDate}, Status={Status}",
+                    followUp.Id, followUp.DueDate, followUp.Status);
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["InspectionId"] = new SelectList(_context.Inspections, "Id", "Id", followUp.InspectionId);
             return View(followUp);
         }
@@ -102,15 +117,30 @@ namespace FoodInspectionTracker.MVC.Controllers
                 return NotFound();
             }
 
+            if (followUp.Status == FollowUpStatus.Closed && followUp.ClosedDate == null)
+            {
+                ModelState.AddModelError("ClosedDate", "ClosedDate is required when status is Closed.");
+                _logger.LogWarning("Follow-up validation failed during edit: Closed follow-up without ClosedDate. FollowUpId={FollowUpId}",
+                    followUp.Id);
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    _logger.LogInformation("Updating follow-up Id={Id} by {User}",
+                        followUp.Id, User.Identity?.Name);
+
                     _context.Update(followUp);
                     await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("Follow-up updated successfully. Id={Id}, Status={Status}, ClosedDate={ClosedDate}",
+                        followUp.Id, followUp.Status, followUp.ClosedDate);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
+                    _logger.LogError(ex, "Concurrency error while updating follow-up Id={Id}", followUp.Id);
+
                     if (!FollowUpExists(followUp.Id))
                     {
                         return NotFound();
@@ -120,8 +150,10 @@ namespace FoodInspectionTracker.MVC.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["InspectionId"] = new SelectList(_context.Inspections, "Id", "Id", followUp.InspectionId);
             return View(followUp);
         }
@@ -151,12 +183,18 @@ namespace FoodInspectionTracker.MVC.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var followUp = await _context.FollowUps.FindAsync(id);
+
             if (followUp != null)
             {
+                _logger.LogInformation("Deleting follow-up Id={Id} by {User}",
+                    followUp.Id, User.Identity?.Name);
+
                 _context.FollowUps.Remove(followUp);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Follow-up deleted successfully. Id={Id}", followUp.Id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

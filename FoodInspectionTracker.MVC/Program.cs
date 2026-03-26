@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
+using Serilog.Context;
 
 // ── Bootstrap logger (captures startup errors) ─────────────────────────────
 Log.Logger = new LoggerConfiguration()
